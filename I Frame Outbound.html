@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="shortcut icon" href="five9.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>School Match Pro - Master Script</title>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.min.css">
+<style type="text/css">
+/* reduced navbar height */
+.nav > li > a {
+padding-top: 4px !important;
+padding-bottom: 4px !important;
+}
+.navbar {
+min-height: 30px !important;
+}
+/* panel padding for scroll bar */
+.panel-default {
+padding-right: 4px;
+}
+.border_boxshadow_none{
+border:none;
+box-shadow:none;margin-bottom:0px;
+}
+.border_boxshadow_none a{
+color:#4039fb;
+font-weight:600;text-decoration:underline;
+}
+</style>
+<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-timepicker-addon.js"
+type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.4.5/jquery-ui-sliderAccess.js"
+type="text/javascript"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.js"></script>
+<script type="text/javascript">
+// Client-specific configuration
+var F9domain = 'Conversion Media Group'; // Five9 domain name
+// Note: F9list is now passed via URL, but we can keep a fallback.
+var F9list = getQueryParam('list_name') || 'CMG_EDU_MANUAL';
+
+
+// Object to hold the expansion scripts based on your document
+var expansionScripts = {
+    'UNKNOWN': "That's perfectly fine. To help find the right fit, which of these sounds the most interesting: Helping people and making a difference, working with computers and technology, building or working with your hands, or focusing on business and management?",
+    'ART-DESIGN': "Creative programs, like Fashion, Interior Design, Web and Graphic Design, maybe even Business Marketing, things like that?",
+    'BUSINESS': "Business programs like Finance, Marketing, Management, maybe even things like Computers and IT?",
+    'COMMUNICATIONS-MEDIA': "Creative and professional programs, things like Audio / Video, Photography, Fashion, maybe even Business and Marketing, things like that?",
+    'COMPUTERS-TECHNOLOGY': "Technical programs like IT, Web and Graphic Design, Engineering, maybe even Audio, Video, and Electronics, things like that?",
+    'COSMETOLOGY': "Alternative programs, like Holistic Therapies, Cosmetology, Massage Therapy, maybe even Medical Specialties, things like that?",
+    'CRIMINAL-JUSTICE-LEGAL-SAFETY': "Criminal Justice programs, maybe even things like Emergency Management, Legal, Counseling, Computer Security, things like that?",
+    'CULINARY-ARTS': "Ok so hands-on programs like cooking and baking, as well as administrative things like hospitality and restaurant management right?",
+    'EDUCATION-TEACHING': "Programs where you can make a difference, maybe even things like Counseling, Criminal Justice, Social Services, things like that?",
+    'ENGINEERING-ARCHITECTURE': "Detailed programs like Architecture, Computer Engineering, Electrical Engineering, maybe even Graphic and Web Design, or Mechanics, things like that?",
+    'LIBERAL-ARTS': "Liberal arts type programs like General Studies, History, maybe even programs in Art and Design, General Business, things like that?",
+    'HEALTH-HEALTHCARE-NURSING': "Healthcare programs, hands-on and administrative? Maybe even Psychology, Massage, Physical Therapy, things like that?",
+    'PSYCHOLOGY-COUNSELING-MENTAL-HEALTH': "Counseling programs, like Social Services, Drug Abuse, maybe even Criminal Justice and Healthcare, Pastoral / Ministry, things like that?",
+    'VOCATIONAL-TRADE': "Hands on programs like Construction, Electrical, HVAC, Mechanics, maybe even Computers, Engineering, Project Management, things like that?"
+};
+
+// Function to get parameters from the URL
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+$.support.cors = true;
+$(document).ready(function() {
+    // --- Populate all display fields ---
+    $('#display_firstname').text(getQueryParam('first_name'));
+    $('#display_lastname').text(getQueryParam('last_name'));
+    $('#display_street').text(getQueryParam('street'));
+    $('#display_location').text(getQueryParam('city') + ', ' + getQueryParam('state') + ' ' + getQueryParam('zip'));
+    $('#display_email').text(getQueryParam('email'));
+    $('#greet_firstname').text(getQueryParam('first_name'));
+    $('#intro_fullname').text(getQueryParam('first_name') + ' ' + getQueryParam('last_name'));
+    $('#intro_agentname').text(getQueryParam('agent_fullname'));
+    $('#closing_agentname').text(getQueryParam('agent_fullname'));
+
+    // --- Pre-select all dropdowns ---
+    var prospectState = getQueryParam('state');
+    if (prospectState) {
+        $("#state").val(prospectState);
+    }
+    var prospectEdulevel = getQueryParam('edulevel');
+    if (prospectEdulevel) {
+        $("#LVLOFED").val(prospectEdulevel);
+    }
+    var prospectInternet = getQueryParam('internet');
+    if (prospectInternet) {
+        $("#CPUINTACCESS").val(prospectInternet);
+    }
+    var prospectStartRange = getQueryParam('timeframe');
+    if (prospectStartRange) {
+        $("#STARTRANGE").val(prospectStartRange);
+    }
+    var prospectAOI1 = getQueryParam('aoi');
+    if (prospectAOI1) {
+        $("#CATEGORYID").val(prospectAOI1);
+    }
+
+    // --- Pre-fill all input fields ---
+    // Basic Info
+    $('#first_name').val(getQueryParam('first_name'));
+    $('#last_name').val(getQueryParam('last_name'));
+    $('#phone_number').val(getQueryParam('number1'));
+    $('#email').val(getQueryParam('email'));
+    $('#postal_code').val(getQueryParam('zip'));
+    $('#city').val(getQueryParam('city'));
+    $('#address1').val(getQueryParam('street'));
+
+    // Qualifying Questions
+    $('#YEARGRAD').val(getQueryParam('hsgradyr'));
+    $('#YEAROFBIRTH').val(getQueryParam('doby'));
+
+    // Hidden fields for data submission
+    $('#RepID').val(getQueryParam('agent_username'));
+    $('#cmg_calling_division').val(getQueryParam('calling_division'));
+    $('#IPAddress').val(getQueryParam('ipaddress'));
+    $('#URL').val(getQueryParam('tcpaurl'));
+    $('#callID').val(getQueryParam('call_id'));
+    $('#sessionID').val(getQueryParam('session_id'));
+    $('#CALLDNIS').val(getQueryParam('dnis'));
+    $('#CALLCAMPAIGN').val(getQueryParam('campaign_name'));
+    $('#one_to_one').val(getQueryParam('1to1consent'));
+    $('#EDULISTNAME').val(getQueryParam('list_name'));
+    $('#TRAFFICLEADID').val(getQueryParam('jornaya'));
+    $('#LMSLEADID').val(getQueryParam('lmsleadid'));
+    $('#TRAFFICTRUSTEDFORM').val(getQueryParam('trustedform'));
+
+    // --- Dynamic Expansion Script Listeners ---
+    $('#CATEGORYID').on('change', function() {
+        var selectedCategory = $(this).val();
+        var scriptText = expansionScripts[selectedCategory];
+        var scriptContainer = $('#expansion-script');
+        if (scriptText) {
+            scriptContainer.text(scriptText).fadeIn();
+        } else {
+            scriptContainer.fadeOut();
+        }
+    });
+
+    $('#CATEGORYID2').on('change', function() {
+        var selectedCategory = $(this).val();
+        var scriptText = expansionScripts[selectedCategory];
+        var scriptContainer = $('#expansion-script-2');
+        if (scriptText) {
+            scriptContainer.text(scriptText).fadeIn();
+        } else {
+            scriptContainer.fadeOut();
+        }
+    });
+});
+/**
+* Handles customer info submission
+*/
+// Function to extract root URL
+function getRootUrl(url) {
+try {
+const parsedUrl = new URL(url);
+return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+} catch (e) {
+console.error('Invalid URL:', url);
+return url; // Fallback to original URL if parsing fails
+}
+}
+function launchConnector() {
+var agentEmail = $("#RepID").val();
+var url;
+var birthYear = $("#YEAROFBIRTH").val() || '';
+var prospectURL = getQueryParam('tcpaurl');
+var signupUrl = prospectURL ? getRootUrl(prospectURL) : ''; // Extract root URL
+var schoolTypeIds = 3; // Store school_type_ids as variable
+var cmgCallingDivision = "EDU"; // Default value
+if ($("#cmg_calling_division").val() === "TEST") {
+cmgCallingDivision = "TEST";
+}
+if (!agentEmail.endsWith('@cmg.com')) {
+// LeadHoop endpoint
+console.log('Using LeadHoop endpoint');
+url = "https://cmg-portal.leadhoop.com/consumer/new/KHiKSMhIAMAnhhaXHYYRYg";
+url += "?phone1=" + encodeURIComponent($("#phone_number").val() || '');
+url += "&email=" + encodeURIComponent($("#email").val() || '');
+url += "&ip=" + encodeURIComponent($("#IPAddress").val() || '');
+url += "&firstname=" + encodeURIComponent($("#first_name").val() || '');
+url += "&lastname=" + encodeURIComponent($("#last_name").val() || '');
+url += "&gender=" + encodeURIComponent(mapGender($("#prefix").val()) || '');
+url += "&age=" + encodeURIComponent(calculateAge($("#YEAROFBIRTH").val()) || '');
+url += "&dob=" + encodeURIComponent(`${birthYear}-01-01` || '');
+url += "&address=" + encodeURIComponent($("#address1").val() || '');
+url += "&address2=" + encodeURIComponent('');
+url += "&zip=" + encodeURIComponent($("#postal_code").val() || '');
+url += "&city=" + encodeURIComponent($("#city").val() || '');
+url += "&state=" + encodeURIComponent($("#state").val() || '');
+url += "&enrolled_status=" + encodeURIComponent(mapEnrolledStatus($("#ENROLLED").val()) || '');
+url += "&grad_year=" + encodeURIComponent($("#YEARGRAD").val() || '');
+url += "&education_level_id=" + encodeURIComponent(mapEducationLevel($("#LVLOFED").val()) || '');
+url += "&start_date=" + encodeURIComponent(mapStartDate($("#STARTRANGE").val()) || '');
+url += "&school_type_ids=" + encodeURIComponent(schoolTypeIds);
+url += "&military_type=" + encodeURIComponent(mapMilitaryType($("#USMILSTATUS").val()) || '');
+url += "&level_interest=" + encodeURIComponent(mapLevelInterest());
+url += "&us_citizen=" + encodeURIComponent(mapCitizenship($("#USACITIZEN").val()) || '');
+url += "&internet_pc=" + encodeURIComponent(mapInternetAccess($("#CPUINTACCESS").val()) || '');
+url += "&rn_license=" + encodeURIComponent($("#RNLICENSE").val() || '');
+url += "&teaching_license=" + encodeURIComponent($("#TEACHLICENSE").val() || '');
+url += "&area_study_ids=" + encodeURIComponent(mapAreaStudyIds($("#CATEGORYID").val(), $("#CATEGORYID2").val()) || '');
+url += "&service_leadid=" + encodeURIComponent($("#TRAFFICLEADID").val() || '');
+url += "&source_service_trusted_form=" + encodeURIComponent($("#TRAFFICTRUSTEDFORM").val() || '');
+url += "&subid=" + encodeURIComponent($("#LMSLEADID").val() || '');
+url += "&subid2=" + encodeURIComponent('');
+url += "&subid3=" + encodeURIComponent('');
+url += "&subid4=" + encodeURIComponent('');
+url += "&pub_transaction_id=" + encodeURIComponent('');
+url += "&agent_id=" + encodeURIComponent($("#RepID").val() || '');
+url += "&agent_name=" + encodeURIComponent(getQueryParam('agent_fullname') || '');
+url += "&signup_url=" + encodeURIComponent(signupUrl || '');
+url += "&consent_url=" + encodeURIComponent(prospectURL || '');
+url += "&call_center_dba=" + encodeURIComponent('');
+url += "&inbound_transfer_dba=" + encodeURIComponent('');
+url += "&inbound_transfer_company=" + encodeURIComponent('');
+url += "&outbound_company=" + encodeURIComponent('');
+url += "&dialer_session_id=" + encodeURIComponent($("#sessionID").val() || '');
+if (cmgCallingDivision === "TEST") {
+url += "&test=true";
+}
+} else {
+// LeadCurrent endpoint
+console.log('Using LeadCurrent endpoint');
+url = "http://cmg.leadcurrentcrm.com/onesearch/core/onesearch.php?new=1&AccessKey=47328d1c-4166-4fb4-8eeb-837257be8ce0";
+url += "&traffic_trustedform_token=" + encodeURIComponent($("#TRAFFICTRUSTEDFORM").val());
+url += "&traffic_leadid_token=" + encodeURIComponent($("#TRAFFICLEADID").val());
+url += "&tracking_token=" + encodeURIComponent($("#LMSLEADID").val());
+url += "&callcenter_url=" + encodeURIComponent(prospectURL);
+url += "&OriginationCallCenterAgentID=" + encodeURIComponent($("#RepID").val());
+url += "&base_url=" + encodeURIComponent(signupUrl);
+url += "&ProspectIPAddress=" + encodeURIComponent($("#IPAddress").val());
+url += "&OriginationCallCenterSessionID=" + encodeURIComponent($("#sessionID").val());
+url += "&ProspectTrafficSourceCode=" + encodeURIComponent($("#EDULISTNAME").val());
+url += "&OriginationCallCenterCallID=" + encodeURIComponent($("#callID").val());
+url += "&consent_date=" + encodeURIComponent(getQueryParam("contact_created"));
+if ($("#CATEGORYID").val() != undefined) {
+url += "&ds_area1=" + encodeURIComponent($("#CATEGORYID").val());
+}
+if ($("#CATEGORYID2").val() != undefined) {
+url += "&ds_area2=" + encodeURIComponent($("#CATEGORYID2").val());
+}
+if ($("#LVLOFED").val() != undefined) {
+url += "&ProspectHighestEducationLevel=" + encodeURIComponent($("#LVLOFED").val());
+}
+if ($("#YEAROFBIRTH").val() != undefined) {
+url += "&ProspectDateOfBirth=" + encodeURIComponent($("#YEAROFBIRTH").val());
+}
+if ($("#STARTRANGE").val() != undefined) {
+url += "&ProspectStartTimeframeMonths=" + encodeURIComponent($("#STARTRANGE").val());
+}
+if ($("#YEARGRAD").val() != undefined) {
+url += "&ProspectHighSchoolGraduationYear=" + encodeURIComponent($("#YEARGRAD").val());
+}
+if ($("#CPUINTACCESS").val() != undefined) {
+url += "&internet=" + encodeURIComponent($("#CPUINTACCESS").val());
+}
+if ($("#first_name").val() != undefined) {
+url += "&ProspectFirstName=" + encodeURIComponent($("#first_name").val());
+}
+if ($("#last_name").val() != undefined) {
+url += "&ProspectLastName=" + encodeURIComponent($("#last_name").val());
+}
+if ($("#email").val() != undefined) {
+url += "&ProspectEmail=" + encodeURIComponent($("#email").val());
+}
+if ($("#address1").val() != undefined) {
+url += "&ProspectStreet1=" + encodeURIComponent($("#address1").val());
+}
+if ($("#city").val() != undefined) {
+url += "&ProspectCity=" + encodeURIComponent($("#city").val());
+}
+if ($("#state").val() != undefined) {
+url += "&ProspectState=" + encodeURIComponent($("#state").val());
+}
+if ($("#postal_code").val() != undefined) {
+url += "&ProspectPostalCode=" + encodeURIComponent($("#postal_code").val());
+}
+if ($("#phone_number").val() != undefined) {
+url += "&ProspectPhone1=" + encodeURIComponent($("#phone_number").val());
+}
+if ($("#RNLICENSE").val() != undefined) {
+url += "&RNLICENSE=" + encodeURIComponent($("#RNLICENSE").val());
+}
+if ($("#TEACHLICENSE").val() != undefined) {
+url += "&TEACHLICENSE=" + encodeURIComponent($("#TEACHLICENSE").val());
+}
+if ($("#USACITIZEN").val() != undefined) {
+url += "&ProspectCitizenship=" + encodeURIComponent($("#USACITIZEN").val());
+}
+if ($("#USMILSTATUS").val() != undefined) {
+url += "&military=" + encodeURIComponent($("#USMILSTATUS").val());
+}
+if ($("#ENROLLED").val() != undefined) {
+url += "&enrolled=" + encodeURIComponent($("#ENROLLED").val());
+}
+if ($("#one_to_one").val() != undefined) {
+url += "&one_to_one=" + encodeURIComponent($("#one_to_one").val());
+}
+}
+// Debug: Log final URL
+console.log('Final URL:', url);
+console.log('Consent URL:', prospectURL);
+console.log('Signup URL:', signupUrl);
+window.open(url);
+}
+function mapLevelInterest() {
+return 'level-of-interest-10';
+}
+function calculateAge(yearOfBirth) {
+if (!yearOfBirth) return '';
+var currentYear = new Date().getFullYear();
+var birthYear = parseInt(yearOfBirth, 10);
+if (isNaN(birthYear)) return '';
+return currentYear - birthYear;
+}
+function mapDateOfBirth(year) {
+if (!year) return '';
+var birthYear = parseInt(year, 10);
+if (isNaN(birthYear) || birthYear < 1900 || birthYear > new Date().getFullYear()) return '';
+return `${birthYear}-01-01`;
+}
+function mapEnrolledStatus(enrolled) {
+if (!enrolled) return '';
+const enrolledMap = {
+'Y': 'enrolled-status-yes',
+'N': 'enrolled-status-no'
+};
+return enrolledMap[enrolled] || '';
+}
+function mapGender(prefix) {
+if (!prefix) return '';
+const genderMap = {
+'Mr': 'M',
+'Mrs': 'F',
+'Ms': 'F'
+};
+return genderMap[prefix] || '';
+}
+function mapEducationLevel(lvlOfEd) {
+if (!lvlOfEd) return '';
+const educationMap = {
+'GED': 'education-level-ged',
+'HS': 'education-level-high-school-diploma',
+'SC23': 'education-level-some-college-1-29-credits',
+'SC47': 'education-level-some-college-30-59-credits',
+'AS': 'education-level-associates-degree',
+'BA': 'education-level-bachelors-degree',
+'MT': 'education-level-masters-degree',
+'PHD': 'education-level-doctorates-phd'
+};
+return educationMap[lvlOfEd] || '';
+}
+function mapStartDate(startRange) {
+if (!startRange) return '';
+const startDateMap = {
+'Immediately': 'desired-start-date-immediately',
+'1-3 months': 'desired-start-date-1-3-months',
+'4-6 months': 'desired-start-date-4-6-months'
+};
+return startDateMap[startRange] || '';
+}
+function mapCitizenship(usCitizen) {
+if (!usCitizen) return '';
+const citizenshipMap = {
+'US Citizen': 'Yes',
+'Permanent Resident': 'Yes',
+'Other': 'No'
+};
+return citizenshipMap[usCitizen] || usCitizen;
+}
+function mapAreaStudyIds(category1, category2) {
+if (!category1 && !category2) return '';
+const areaMap = {
+'ART-DESIGN': 'Art and Design',
+'BUSINESS': 'Business',
+'COMMUNICATIONS-MEDIA': 'Communications and Media',
+'COMPUTERS-TECHNOLOGY': 'Computers and Technology',
+'COSMETOLOGY': 'Cosmetology',
+'CRIMINAL-JUSTICE-LEGAL-SAFETY': 'Criminal Justice and Legal',
+'CULINARY-ARTS': 'Culinary and Hospitality',
+'EDUCATION-TEACHING': 'Education and Teaching',
+'ENGINEERING-ARCHITECTURE': 'Engineering and Architecture',
+'LIBERAL-ARTS': 'Liberal Arts',
+'HEALTH-HEALTHCARE-NURSING': 'Nursing and Healthcare',
+'PSYCHOLOGY-COUNSELING-MENTAL-HEALTH': 'Psychology and Counseling',
+'VOCATIONAL-TRADE': 'Trades and Vocational',
+'ALLX': 'All Programs'
+};
+let areas = [];
+if (category1 && areaMap[category1]) areas.push(areaMap[category1]);
+if (category2 && areaMap[category2] && category2 !== category1) areas.push(areaMap[category2]);
+return areas.join(',') || '';
+}
+function mapInternetAccess(cpuIntAccess) {
+if (!cpuIntAccess) return '';
+const internetMap = {
+'Y': 'computer-with-internet-yes',
+'N': 'computer-with-internet-no'
+};
+return internetMap[cpuIntAccess] || '';
+}
+function mapMilitaryType(militaryStatus) {
+if (!militaryStatus) return '';
+const militaryMap = {
+'None': 'military-no-military-affiliation',
+'Reserve': 'military-nv-selective-reserve-sr',
+'Guard': 'military-nv-selective-reserve-sr',
+'Dependent': 'military-nv-spouse-of-ad-or-sr',
+'Spouse': 'military-nv-spouse-of-ad-or-sr',
+'Veteran': 'military-nv-veteran',
+'Active Duty': 'military-nv-active-duty-ad'
+};
+return militaryMap[militaryStatus] || '';
+}
+/**
+* Handles body onload event
+*/
+function onloadHandler() {
+resizeHandler();
+var d = new Date();
+d.setMinutes(0,0,0);
+// setup callback datetime picker
+$('#callback_datetime').datetimepicker({
+dateFormat: 'mm-dd-yy',
+timeFormat: 'hh:mm TT z',
+minDateTime: d,
+hourMin: 8,
+hourMax: 22,
+stepHour: 1,
+stepMinute: 5,
+timezoneList: [
+{ value: 'ET', label: 'Eastern'},
+{ value: 'CT', label: 'Central' },
+{ value: 'MT', label: 'Mountain' },
+{ value: 'PT', label: 'Pacific' }
+],
+onClose: function(text, picker) {
+console.log('callback_datetime: '+text);
+}
+});
+setTimeout(checkVariablePopulation, 500);
+}
+/**
+* Handles body resize to fix navbar padding
+*/
+function resizeHandler() {
+var h = $("#navbar").height()+'px';
+$("#main-panel").css('padding-top', h);
+}
+/**
+* Handles script variable initialization
+*/
+function checkVariablePopulation() {
+var csts = getQueryParam('start_timestamp');
+var cets = getQueryParam('end_timestamp');
+if (csts && cets && csts <= cets) {
+try {
+callEnded();
+} catch (e) { }
+} else if (csts) {
+try {
+callStarted();
+} catch (e) { }
+} else {
+// This part may no longer be necessary if variables are loaded instantly
+// setTimeout(checkVariablePopulation, 1000);
+}
+}
+/**
+* Handler for call started
+*/
+function callStarted() {
+// This function is no longer needed as data is populated in document.ready
+}
+/**
+* Handler for call ended
+*/
+function callEnded() {
+$("#submit_update").prop("disabled", true);
+}
+/**
+* Handles customer info submission
+*/
+function doCrmUpdate() {
+var contact = {};
+contact.cmg_calling_division = "EDU";
+contact.city = $("#city").val();
+contact.cmg_edu_aoi = $("#CATEGORYID").val();
+contact.cmg_edu_doby = $("#YEAROFBIRTH").val();
+contact.cmg_edu_edulevel = $("#LVLOFED").val();
+contact.cmg_edu_hsgradyr = $("#YEARGRAD").val();
+contact.cmg_edu_internet = $("#CPUINTACCESS").val();
+contact.cmg_edu_timeframe = $("#STARTRANGE").val();
+contact.email = $("#email").val();
+contact.first_name = $("#first_name").val();
+contact.last_name = $("#last_name").val();
+contact.number1 = $("#phone_number").val();
+contact.state = $("#state").val();
+contact.street = $("#address1").val();
+contact.zip = $("#postal_code").val();
+contact.cmg_edu_lmsleadid = getQueryParam('lmsleadid');
+// do some input validation
+var error = undefined;
+if (!/^[0-9]{10}$/.test(contact.number1)) {
+error = 'Primary Phone must be exactly 10 numeric digits.';
+} else if (!contact.first_name.length) {
+error = 'First Name must be provided.';
+} else if (!contact.last_name.length) {
+error = 'Last Name must be provided.';
+} else if (!contact.city.length) {
+error = 'City must be provided.';
+} else if (!/^[a-zA-Z]{2}$/.test(contact.state)) {
+error = 'State must be selected.';
+} else if (contact.zip.length && !/^[0-9]{5}$/.test(contact.zip)) {
+error = 'Zip must be exactly 5 numeric digits or empty.';
+}
+if (error) {
+var statusdiv = $("#updatestatus");
+statusdiv.attr('style', 'color: red');
+statusdiv.html(error);
+} else {
+// process web service update calls
+doWeb2CampaignUpdate(contact);
+}
+launchConnector();
+}
+/**
+* Handles customer callback submission
+*/
+function doScheduleCallback() {
+var contact = {};
+contact.number1 = getQueryParam('number1');
+contact.cmg_edu_lmsleadid = getQueryParam('lmsleadid');
+contact.F9TimeToCall = adjustForDST($("#callback_datetime").val());
+contact.F9TimeFormat = 'MM-dd-yyyy HH:mm a z';
+// do some input validation
+var error = undefined;
+if (!/^[0-9]{10}$/.test(contact.number1)) {
+error = 'Primary Phone must be exactly 10 numeric digits.';
+} else if (!contact.F9TimeToCall.length) {
+error = 'Callback Time must be provided.';
+}
+if (error) {
+var statusdiv = $("#callbackstatus");
+statusdiv.attr('style', 'color: red');
+statusdiv.html(error);
+} else {
+// process web service update calls
+// doWeb2CampaignUpdate(contact);
+}
+}
+/**
+* Perform Five9 web2campaign contact update
+*/
+function doWeb2CampaignUpdate(contact) {
+var success = false;
+var url = 'https://api.five9.com/web2campaign/AddToList?'
++ 'F9domain=' + F9domain
++ '&F9list=' + F9list
++ '&F9key=cmg_edu_lmsleadid'
++ '&F9key=number1'
++ '&F9updateCRM=1'
++ '&cmg_list_name=' + F9list;
+for (var key in contact) {
+if (!contact.hasOwnProperty(key)) continue;
+url += '&' + key + '=' + contact[key];
+}
+var fnSuccess = function(data) {
+var statusdiv = $("#updatestatus");
+var response = $(data);
+var f9errCode = parseInt(response.find("input[name=F9errCode]").val());
+var f9errDesc = response.find("input[name=F9errDesc]").val();
+success = (f9errCode == 0);
+if (success) {
+statusdiv.attr('style', 'color: green');
+statusdiv.html(f9errDesc);
+} else {
+statusdiv.attr('style', 'color: red');
+statusdiv.html('Update failed: (' + f9errCode + ') ' + f9errDesc);
+}
+};
+var fnError = function(jqXHR, status, error) {
+var statusdiv = $("#updatestatus");
+statusdiv.attr('style', 'color: red');
+statusdiv.html('Update failed: ' + error);
+success = false;
+};
+$.ajax({
+type: 'GET',
+url: url,
+async: false,
+dataType: 'html',
+success: fnSuccess,
+error: fnError
+});
+return success;
+}
+function setCookie(cname, cvalue, exdays) {
+var cookie = cname + "=" + cvalue;
+var expires = '';
+if (!!exdays) {
+var d = new Date();
+d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+expires = '; expires=' + d.toGMTString();
+}
+document.cookie = cookie + expires;
+}
+function getCookie(cname) {
+var name = cname + "=";
+var ca = document.cookie.split(';');
+for (var i = 0; i < ca.length; i++) {
+var c = ca[i].trim();
+if (c.indexOf(name) == 0) {
+return c.substring(name.length, c.length);
+}
+}
+return '';
+}
+/**
+* Adjusts a date string captured by datetimepicker for DST offset
+*/
+function adjustForDST(strdate) {
+var TZDATA = {
+AT: { false: 'AST', true: 'ADT' },
+ET: { false: 'EST', true: 'EDT' },
+CT: { false: 'CST', true: 'CDT' },
+MT: { false: 'MST', true: 'MDT' },
+PT: { false: 'PST', true: 'PDT' },
+AKT: { false: 'AKST', true: 'AKDT' },
+HAT: { false: 'HAST', true: 'HADT' }
+};
+if (!!strdate) {
+var match = /(.*?)([A-Z]+T)$/.exec(strdate);
+if (!!match && match.length == 3) {
+var datetime = match[1];
+var timezone = match[2];
+var isdst = isDST(new Date(datetime));
+var tzstr = '';
+try {
+tzstr = TZDATA[timezone][isdst];
+} catch (e) {}
+return datetime+tzstr;
+}
+}
+return strdate;
+}
+/**
+* Returns true if the given date is within DST
+*/
+function isDST(date) {
+date = date || new Date();
+if (typeof date == 'object' && 'getTimezoneOffset' in date) {
+var jan = new Date(date.getFullYear(), 0, 1);
+return date.getTimezoneOffset() != jan.getTimezoneOffset();
+}
+return false;
+}
+</script>
+</head>
+<body onload="onloadHandler();" onresize="resizeHandler();">
+<nav id="navbar" class="navbar navbar-default navbar-fixed-top">
+<div class="container-fluid">
+<ul class="nav nav-tabs" data-tabs="tabs">
+<li class="active"><a id="a-tab-primary" href="#tab-primary" data-toggle="tab">EDU</a></li>
+</ul>
+</div>
+</nav>
+<div id="main-panel" class="container-fluid">
+<div id="tab-content" class="tab-content">
+<div id="tab-primary" class="tab-pane active">
+<div class="panel panel-default">
+<div class="panel-body">
+<input type="hidden" id="RepID" value="">
+<input type="hidden" id="cmg_calling_division" value="">
+<input type="hidden" id="IPAddress" value="">
+<input type="hidden" id="URL" value="">
+<input type="hidden" id="callID" value="">
+<input type="hidden" id="sessionID" value="">
+<input type="hidden" id="CALLDNIS" value="">
+<input type="hidden" id="CALLCAMPAIGN" value="">
+<input type="hidden" id="one_to_one" value="">
+<input type="hidden" id="EDULISTNAME" value="">
+<input type="hidden" id="TRAFFICLEADID" value="">
+<input type="hidden" id="LMSLEADID" value="">
+<input type="hidden" id="TRAFFICTRUSTEDFORM" value="">
+<div class="row">
+<div class="col-xs-6" style="background-color:#2993ca;">
+<img style="text-align:center;background-color:#2993ca;" src="http://leadcurrentcrm.com/037_cmg/cmg_top.png" alt="">
+</div>
+</div>
+<br>
+<div class="row">
+<div class="col-xs-10">
+<table cellpadding="10px" width="80%">
+<tr>
+<td><strong>First Name:</strong>&nbsp;<i id="display_firstname"></i></td>
+<td><strong>Street Address:</strong>&nbsp;<i id="display_street"></i></td>
+</tr>
+<tr>
+<td><strong>Last Name:</strong>&nbsp;<i id="display_lastname"></i></td>
+<td><strong>City/State/Zip:</strong>&nbsp;<i id="display_location"></i></td>
+</tr>
+<tr>
+<td><strong>Email:</strong>&nbsp;<i id="display_email"></i></td>
+<td>&nbsp;</td>
+</tr>
+</table>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="col-xs-3">
+<br>
+<button type="button" id="submit_update2" class="btn btn-primary"
+onclick="doCrmUpdate();">Commit and SEARCH!</button>
+</div>
+<div class="col-xs-8 pull-right">
+<span id="updatestatus"></span>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="col-xs-10">
+<p>
+Hi <strong>(<span id="greet_firstname"></span>)</strong>?
+</p>
+<p>
+(Once prospect confirms)
+</p>
+<p>
+Hi <strong>(<span id="intro_fullname"></span>)</strong> this is <strong>(<span id="intro_agentname"></span>) with (School Match Pro) on a Recorded line,</strong> our records indicate that you wanted some information on Colleges and Trade Schools. Now were you looking to start right away or would you like to to give yourself some more time?
+</p>
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%;mso-pagination:
+none;mso-layout-grid-align:none;text-autospace:none'><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;mso-ansi-language:EN'>OK, I’ll put that down for you. I just need to
+verify some basic information and I’ll have you on your way!<o:p></o:p></span></p>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="container-fluid">
+<div class="content">
+<h3>Rebuttal's</h3>
+<div class="" id="accordion">
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse0"><strong>FINANCIAL AID/SCOLORSHIPS/GRANTS:</strong></a>
+<div id="collapse0" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+There is FINANCIAL AID FOR THOSE WHO QUALIFY. Let's find you some options and the enrollment counselors will be happy to answer ANY questions you may have, OK?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">NOT INTERESTED:</a>
+<div id="collapse1" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+1. Oh, I see, If I may ask, is it that you don't want to go to school at all, Or you DO, but NOW IS NOT A GOOD TIME?
+<br>
+2. Ok, got it, I’ll go ahead and put down, that now is not a good time, maybe 3 months will be better... When you are ready, what would you look into, something in
+Business, Healthcare, trades?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse2">I NEED MORE TIME:</a>
+<div id="collapse2" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+Ok, got it, I’ll go ahead and put down that 3 months would be better, just to give yourself that needed time ok? <br>
+<strong>YES:</strong> Great! I just need to verify some basic information and I'll have you on your way. What year did you get your HS Diploma or GED?<br>
+<strong>NO:</strong> No problem, I'll put down you need a little more time. Just so you know, we are not a school. We simply provide you with a few options for whenever you are ready to further your education in the future. So let me ask... WHEN YOU ARE READY, what programs would you look into? Something in Business, Healthcare, Trades
+maybe?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse3">STILL NOT SURE? CLARIFY SERVICE:</a>
+<div id="collapse3" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+Just so you know, we’re not a school, we simply help students find schools and programs that match their interests. I just need to verify some basic information and we’ll find you some
+options. <br>
+<strong> BACK TO SCRIPT:</strong> Now, just to confirm, what year did you earn your High School Diploma or GED?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse4">JOB:</a>
+<div id="collapse4" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+(Name), I understand YOUR work situation, we certainly don’t want you to STOP looking for work. If you had the opportunity to continue your education in a way that did not interfere with
+your current job search or your family life, what would you see yourself looking into, something in Business, Healthcare, trades, maybe?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse5">HOW DID YOU GET MY INFORMATION? </a>
+<div id="collapse5" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+It was from a submission that was made online stating you were interested in furthering your education. This is just a courtesy call to see if you were looking to get started right away or if
+you needed a little more time?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse6">I DID NOT REQUEST THIS:</a>
+<div id="collapse6" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+You may have checked a box while searching for a job. Just so you know, we are not a school. We simply provide you with some information for whenever you are ready to further your
+education in the future. I just need to verify some basic information and we’ll find you some options ok?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse7">YOU HAVE THE WRONG PERSON:</a>
+<div id="collapse7" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+This is <strong>(<span id="wrongperson_fullname"></span>)</strong> correct? Ok, well you may have checked a box while searching for a job. I can go ahead and update our
+records. Just to clarify, we are not a school. We simply provide you with some information for whenever you are ready to further your education in the future. If you are interested, it would only take a few minutes for me to provide you with some options. Would that be ok?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse8">CALLBACK:</a>
+<div id="collapse8" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+My call will be very brief and then I will have the schools give you a call back at a better time. Would that be OK?
+</div>
+<div class="col-md-12">
+[IF OK] Great! All I have to do is quickly verify your information on file.<br>
+[IF NO] Ok no problem, when would you like us to call you back?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse9">NO TIME FOR SCHOOL:</a>
+<div id="collapse9" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+I completely understand! Just so you know, we are not a school. We simply provide you with college options for when you are ready to further your education in the future. What I can do is
+provide you with a few online options that may be more flexible with your schedule. In that case, would you be able to start immediately, or would 3 months from now be better to give yourself some more time?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse10">NO MONEY FOR SCHOOL:</a>
+<div id="collapse10" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+I understand how tight money is nowadays. As you know every school is different, and each has their own way of helping students with their financial needs and there is FINANCIAL AID
+FOR THOSE WHO QUALIFY. Let’s find you some options, and the Enrollment Counselors from the schools will any answer any questions you may have!
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse11">ALREADY HAS A DEGREE:</a>
+<div id="collapse11" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+Great! I appreciate you sharing that with me! May I ask what area you received your degree in?
+</div>
+<div class="col-md-12">
+Great! (Name) we are not a school; we simply help students find schools and programs that match their interests. Is there anything you’d like me to look into while I have you, maybe
+something that advances the degree you have, or maybe even a new specialty or skill?
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse12">ALREADY ENROLLED:</a>
+<div id="collapse12" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+<strong>[EARLY IN THE CALL] _ Exit the call:</strong>
+Good luck with your education and all your endeavors.
+</div>
+<div class="col-md-12">
+<strong>When asking qualifying questions:</strong>
+Unless you are looking to transfer, if you are already enrolled in a school we are not able to assist you at this time. Please give us a call back if your situation were to change in the near
+future.<br>
+CAN ONLY PROCEED [IF THE PROSPECT] states and commits to <u>wanting to transfer schools</u> or almost graduating (within 3 months) and has an interest in continuing their education. <strong><u>You cannot ask or probe about a prospect wanting to transfer.</u></strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse13">UNCOMFORTABLE GIVING INFORMATION:</a>
+<div id="collapse13" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+(Now Ms./Mr. Prospects name), I completely understand your level of concern but I can assure that your information will only be used to locate schools that you qualify for and that are
+either close to your location or online.
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse14">ALREADY HAS A SCHOOL IN MIND:</a>
+<div id="collapse14" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+Great! What I would like to do is provide you with a few additional options so that you can compare them to the school you already have in mind. Are you open to additional options?
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="YEARGRAD"><span style="color:red">*</span>Now, just to confirm, what year did you earn your High School Diploma or GED?
+<br><br><span style="color:red">Has to have a High School Diploma or GED from USA to qualify!
+</span> </label>
+<input type="text" id="YEARGRAD" class="form-control" value="">
+<p class=MsoListParagraph style='margin-top:0in;margin-right:0in;margin-bottom:
+10.0pt;margin-left:.75in;mso-add-space:auto;text-indent:-.25in;line-height:
+115%;mso-pagination:none;mso-list:l1 level1 lfo5;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportLists]><span lang=EN style='font-family:
+Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN;mso-bidi-font-weight:
+bold'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span class=GramE><b><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;color:#1F4E79;mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:
+EN'>Unfortunately</span></b></span><b><span lang=EN style='mso-ascii-font-family:
+Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN'> the schools we
+work with require students to have a High School Diploma or GED to apply.
+Please feel free to contact us once you obtain your HS diploma or GED. Once
+again, this is (Rep Name) with School Match Pro and you can always reach me at
+954-361-9501. Good Luck and have a great day!<o:p></o:p></span></b></p>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="YEAROFBIRTH"><span style="color:red">*</span>2. To verify you are over 18, what year were you born? </label>
+<input type="text" id="YEAROFBIRTH" class="form-control" value="">
+<p class=MsoListParagraph style='margin-top:0in;margin-right:0in;margin-bottom:
+10.0pt;margin-left:.75in;mso-add-space:auto;text-indent:-.25in;line-height:
+115%;mso-pagination:none;mso-list:l1 level1 lfo5;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportLists]><span lang=EN style='font-family:
+Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN;mso-bidi-font-weight:
+bold'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span class=GramE><b><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;color:#1F4E79;mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:
+EN'>Unfortunately</span></b></span><b><span lang=EN style='mso-ascii-font-family:
+Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN'> we only work
+with potential students that are 18 years of age. Please feel free to reach
+back out to us when you turn 18. Once again, this is (Rep Name) with School
+Match Pro and you can always reach me at 954-361-9501. Good Luck and have a
+great day!<o:p></o:p></span></b></p>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="CATEGORYID"><span style="color:red">*</span>What was the program you were thinking about was it something in Healthcare, Business, Trades...?</label>
+<select id="CATEGORYID" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="UNKNOWN">Not Sure / Unknown</option>
+<option value="ART-DESIGN">Art and Design</option>
+<option value="BUSINESS">Business</option>
+<option value="COMMUNICATIONS-MEDIA">Communications and Media</option>
+<option value="COMPUTERS-TECHNOLOGY">Computers and Technology</option>
+<option value="COSMETOLOGY">Cosmetology</option>
+<option value="CRIMINAL-JUSTICE-LEGAL-SAFETY">Criminal Justice and Legal</option>
+<option value="CULINARY-ARTS">Culinary and Hospitality</option>
+<option value="EDUCATION-TEACHING">Education and Teaching</option>
+<option value="ENGINEERING-ARCHITECTURE">Engineering and Architecture</option>
+<option value="LIBERAL-ARTS">Liberal Arts</option>
+<option value="HEALTH-HEALTHCARE-NURSING">Nursing and Healthcare</option>
+<option value="PSYCHOLOGY-COUNSELING-MENTAL-HEALTH">Psychology And Counseling</option>
+<option value="VOCATIONAL-TRADE">Trades and Vocational</option>
+<option value="ALLX" selected>All Programs</option>
+</select>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="col-xs-10">
+    <div id="expansion-script" style="color:#2993ca; font-style:italic; padding:10px; border-left: 3px solid #2993ca; display:none;"></div>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="col-xs-10">
+<p>
+<h2><strong>
+Just so you are aware, we are an education referral service, we work with hundreds of schools nationwide with whom we maintain
+business relationships. I'll be as brief as possible.
+</strong></h2>
+</p>
+</div>
+</div>
+<hr width="50%" align="left">
+<br>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="USACITIZEN"><span style="color:red">*</span><strong>(<span id="citizen_firstname"></span>)</strong>, are you a U.S. citizen? (PermRes, Green Card ok)</label>
+<select id="USACITIZEN" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="US Citizen">US Citizen</option>
+<option value="Permanent Resident">Permanent Resident</option>
+<option value="Other">Other</option>
+</select>
+<p class=MsoListParagraph style='margin-top:0in;margin-right:0in;margin-bottom:
+10.0pt;margin-left:.75in;mso-add-space:auto;text-indent:-.25in;line-height:
+115%;mso-pagination:none;mso-list:l1 level1 lfo5;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportLists]><span lang=EN style='font-family:
+Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN;mso-bidi-font-weight:
+bold'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span class=GramE><b><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;color:#1F4E79;mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:
+EN'>Unfortunately</span></b></span><b><span lang=EN style='mso-ascii-font-family:
+Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN'> we are unable
+to help you at this time. We wish you luck in your future endeavors. Once
+again, this is (Rep Name) with School Match Pro and you can always reach me at
+954-361-9501. Good Luck and have a great day!<o:p></o:p></span></b></p>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="LVLOFED"><span style="color:red">*</span>What?s the highest level of education that you have completed? <br><br><span style="color:red">Has to have a High School Diploma or GED from USA to qualify!
+</span></label>
+<select id="LVLOFED" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="GED">GED</option>
+<option value="HS">High School</option>
+<option value="SC23">0-23 College Credits</option>
+<option value="SC47">24-47 College Credits</option>
+<option value="AS">Associates Degree</option>
+<option value="BA">Bachelors Degree</option>
+<option value="MT">Masters Degree</option>
+<option value="PHD">Doctoral Degree</option>
+</select>
+<p class=MsoListParagraph style='margin-top:0in;margin-right:0in;margin-bottom:
+10.0pt;margin-left:.75in;mso-add-space:auto;text-indent:-.25in;line-height:
+115%;mso-pagination:none;mso-list:l1 level1 lfo5;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportLists]><span lang=EN style='font-family:
+Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN;mso-bidi-font-weight:
+bold'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><span class=GramE><b><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;color:#1F4E79;mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:
+EN'>Unfortunately</span></b></span><b><span lang=EN style='mso-ascii-font-family:
+Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN'> the schools we
+work with require students to have a High School Diploma or GED to apply.
+Please feel free to contact us once you obtain your HS diploma or GED. Once
+again, this is (Rep Name) with School Match Pro and you can always reach me at
+954-361-9501. Good Luck and have a great day!<o:p></o:p></span></b></p>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="ENROLLED"><span style="color:red">*</span>Are you currently enrolled in a school?
+</label>
+<select id="ENROLLED" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="Y">Yes</option>
+<option value="N">No</option>
+</select>
+<br>
+</div>
+</div>
+<p class=MsoListParagraphCxSpFirst style='margin-top:0in;margin-right:0in;
+margin-bottom:10.0pt;margin-left:.75in;mso-add-space:auto;text-indent:-.25in;
+line-height:115%;mso-pagination:none;mso-list:l1 level1 lfo5;mso-layout-grid-align:
+none;text-autospace:none'><![if !supportLists]><span lang=EN style='font-family:
+Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN;mso-bidi-font-weight:
+bold'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><b><span lang=EN style='mso-ascii-font-family:
+Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN'>Unless you are
+looking to transfer, if you are already enrolled in a school we are not able to
+assist you at this time.
+Please give us a call back if your situation were to
+change in the near future. Once again, this is (Rep Name) with School Match Pro
+and you can always reach me at 954-361-9501. Good Luck and have a great day!<o:p></o:p></span></b></p>
+<br>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="CPUINTACCESS"><span style="color:red">*</span>If the schools required it, do you have access to a computer with internet access? (If NO, do not offer PEC online schools. Must be Yes for online options)</label>
+<select id="CPUINTACCESS" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="Y">Yes</option>
+<option value="N">No</option>
+</select>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="USMILSTATUS"><span style="color:red">*</span>Do you have any military affiliation?</label>
+<select id="USMILSTATUS" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="None">None</option>
+<option value="Reserve">Reserve</option>
+<option value="Guard">Guard</option>
+<option value="Dependent">Dependent</option>
+<option value="Spouse">Spouse</option>
+<option value="Veteran">Veteran</option>
+<option value="Active Duty">Active Duty</option>
+</select>
+</div>
+</div>
+<br>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="STARTRANGE"><span style="color:red">*</span>And are you looking to start classes right away, or would the next 3 months be better to give yourself some more time? (Start must be within 6 months)</label>
+<select id="STARTRANGE" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="Immediately">Immediately</option>
+<option value="1-3 months">1 - 3 Months</option>
+<option value="4-6 months">4 - 6 Months</option>
+</select>
+</div>
+</div>
+<p class=MsoListParagraph style='margin-top:0in;margin-right:0in;margin-bottom:
+10.0pt;margin-left:.75in;mso-add-space:auto;text-indent:-.25in;line-height:
+115%;mso-pagination:none;mso-list:l1 level1 lfo5;mso-layout-grid-align:none;
+text-autospace:none'><![if !supportLists]><span lang=EN style='font-family:
+Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN;mso-bidi-font-weight:
+bold'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]><b><span lang=EN style='mso-ascii-font-family:
+Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:#1F4E79;
+mso-themecolor:accent5;mso-themeshade:128;mso-ansi-language:EN'>
+Since our schools typically work in a <span class=GramE>6 month</span> timeframe, it
+would be best <span class=GramE>that</span> you contact us closer to when you
+are considering starting classes. Once again, this is (Rep Name) with School
+Match Pro and you can always reach me at 954-361-9501. Good Luck and have a
+great day!<o:p></o:p></span></b></p>
+<br>
+<hr width="50%" align="left">
+<div class="input-group-sm col-xs-10">
+<label for="prefix"><span style="color:red">*</span>Prefix:</label>
+<select id="prefix" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="Mr">Mr</option>
+<option value="Mrs">Mrs</option>
+<option value="Ms">Ms</option>
+</select>
+</div>
+<div class="row">
+<div class="input-group-sm col-xs-5">
+<label for="first_name"><span style="color:red">*</span>I have your first name as</label>
+<input type="text" id="first_name" class="form-control" value="">
+</div>
+<div class="input-group-sm col-xs-5">
+<label for="last_name"><span style="color:red">*</span>And your last name as</label>
+<input type="text" id="last_name" class="form-control" value="">
+</div>
+</div>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="phone_number"><span style="color: red">*</span>What is the best number for an admissions adviser to reach you on?<u><span
+style='color:red;letter-spacing:-.25pt'> (<span class=GramE>note</span>: must
+confirm 10 digit phone number)</span></u></label>
+<input type="text" id="phone_number" class="form-control" size="12" maxlength="10" value="">
+</div>
+</div>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="email">I have your email address as</label>
+<input type="text" id="email" class="form-control" size="45" value="">
+</div>
+</div>
+<div class="input-group-sm col-xs-3">
+<label for="postal_code">Ok great, I have your zip code as</label>
+<input type="text" id="postal_code" class="form-control" size="7" maxlength="5" value="">
+</div>
+<div class="row">
+<div class="input-group-sm col-xs-4">
+<label for="city"><span style="color:red">*</span>And city as</label>
+<input type="text" id="city" class="form-control" value="">
+</div>
+<div class="input-group-sm col-xs-3">
+<label for="state"><span style="color:red">*</span>And that?s in</label>
+<select id="state" class="form-control">
+<option value=""></option>
+<option value="AL">AL</option>
+<option value="AK">AK</option>
+<option value="AZ">AZ</option>
+<option value="AR">AR</option>
+<option value="CA">CA</option>
+<option value="CO">CO</option>
+<option value="CT">CT</option>
+<option value="DE">DE</option>
+<option value="DC">DC</option>
+<option value="FL">FL</option>
+<option value="GA">GA</option>
+<option value="HI">HI</option>
+<option value="ID">ID</option>
+<option value="IL">IL</option>
+<option value="IN">IN</option>
+<option value="IA">IA</option>
+<option value="KS">KS</option>
+<option value="KY">KY</option>
+<option value="LA">LA</option>
+<option value="ME">ME</option>
+<option value="MD">MD</option>
+<option value="MA">MA</option>
+<option value="MI">MI</option>
+<option value="MN">MN</option>
+<option value="MS">MS</option>
+<option value="MO">MO</option>
+<option value="MT">MT</option>
+<option value="NE">NE</option>
+<option value="NV">NV</option>
+<option value="NH">NH</option>
+<option value="NJ">NJ</option>
+<option value="NM">NM</option>
+<option value="NY">NY</option>
+<option value="NC">NC</option>
+<option value="ND">ND</option>
+<option value="OH">OH</option>
+<option value="OK">OK</option>
+<option value="OR">OR</option>
+<option value="PA">PA</option>
+<option value="PR">PR</option>
+<option value="RI">RI</option>
+<option value="SC">SC</option>
+<option value="SD">SD</option>
+<option value="TN">TN</option>
+<option value="TX">TX</option>
+<option value="UT">UT</option>
+<option value="VT">VT</option>
+<option value="VA">VA</option>
+<option value="WA">WA</option>
+<option value="WV">WV</option>
+<option value="WI">WI</option>
+<option value="WY">WY</option>
+</select>
+</div>
+</div>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="address1">Ok great, and may I please have your street name and number?</label>
+<input type="text" id="address1" class="form-control" size="45" value="">
+</div>
+</div>
+<div class="row">
+<div class="col-xs-10">
+<p>
+<span style="color:green"><i>P.O. boxes are accepted</i></span>
+</p>
+</div>
+</div>
+<div class="row">
+<div class="input-group-sm col-xs-10">
+<label for="CATEGORYID2"><span style="color:red">*</span>Before I run my search, <strong>(<span id="secondary_firstname"></span>)</strong>, what other fields have you thought about? Something like Computers, Medical, Trades, Business?</label>
+<select id="CATEGORYID2" class="form-control">
+<option value="NULL">Please select...</option>
+<option value="ART-DESIGN">Art and Design</option>
+<option value="BUSINESS">Business</option>
+<option value="COMMUNICATIONS-MEDIA">Communications and Media</option>
+<option value="COMPUTERS-TECHNOLOGY">Computers and Technology</option>
+<option value="COSMETOLOGY">Cosmetology</option>
+<option value="CRIMINAL-JUSTICE-LEGAL-SAFETY">Criminal Justice and Legal</option>
+<option value="CULINARY-ARTS">Culinary and Hospitality</option>
+<option value="EDUCATION-TEACHING">Education and Teaching</option>
+<option value="ENGINEERING-ARCHITECTURE">Engineering and Architecture</option>
+<option value="LIBERAL-ARTS">Liberal Arts</option>
+<option value="HEALTH-HEALTHCARE-NURSING">Nursing and Healthcare</option>
+<option value="PSYCHOLOGY-COUNSELING-MENTAL-HEALTH">Psychology And Counseling</option>
+<option value="VOCATIONAL-TRADE">Trades and Vocational</option>
+<option value="ALLX" selected>All Programs</option>
+</select>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-10">
+    <div id="expansion-script-2" style="color:#2993ca; font-style:italic; padding:10px; border-left: 3px solid #2993ca; display:none;"></div>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="col-xs-3">
+<br>
+<button type="button" id="submit_update" class="btn btn-primary"
+onclick="doCrmUpdate();">Commit and SEARCH!</button>
+</div>
+<div class="col-xs-8 pull-right">
+<span id="updatestatus"></span>
+</div>
+</div>
+<hr width="50%" align="left">
+<div class="row">
+<div class="col-xs-10">
+<p><strong>Begin Search Here:</strong></p>
+<p><strong>"Dead Air" Fillers:</strong></p>
+<p>
+Once again, we are an education referral service, we work with hundreds of schools nationwide with whom we maintain business relationships.<br><br>
+When would you prefer the schools contact you morning noon afternoon?<br><br>
+How’s the weather in your area right now?<br><br>
+What got you interested in (AOI)?<br><br>
+How long have you been interested in the (AOI) field?<br><br>
+Do you know anyone who works in that field?<br><br>
+Do you have any prior experience working in that field?<br><br>
+What makes you so passionate about this field?<br><br>
+</p>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-10">
+<p><strong>**If Warm Transfer option go to WT script.**</strong></p>
+<p><strong>**If Regular Submission offer proceed with below.**</strong></p>
+</div>
+</div>
+
+
+<br>
+
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse15">WT SCRIPT:</a>
+<div id="collapse15" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+
+<div class="col-md-12">
+
+
+So, I’m actually seeing <strong>(school_name)</strong>. They have a <strong>(degree level)</strong> in <strong>(degree_program)</strong> offered at <strong>(campus_location_or_online)</strong>, which seems right up your alley, <br><br>
+What I’d like to do is quickly connect you with my contact at <strong>(school_name)</strong>, who can tell you more about the program. If you have 15-20 minutes It’s a good opportunity to ask all the questions you have, and to get more information on the program, would that be ok? (must get a confirmation – yeah, ok, that’s fine, etc.)  <br><br>
+Ok great, have you ever spoken to this school before? (to avoid duplicates) <br><br>
+<strong>(MAKE SURE TO ASK ALL SPECIFIC SCHOOL QUESTIONS)<br><br>
+(MUST READ TCPA FOR ALL WARM TRANSFERS)<br><br>
+TCPA:</strong><br>
+I am required to get your separate consent for each school individually to contact you about the educational opportunities we just discussed via email, text, or phone number you provided including using automated technology, regardless of whether the number is on any federal or state do not call list. You acknowledge you are the subscriber and regular user of this number and are authorized to provide this consent. You acknowledge that your consent is not a requirement to purchase any goods or services, and you may withdraw your consent at any time. Message/data rates may apply. Do you give consent for <strong>"school A"</strong> please say yes or I agree.<br><br>
+Now once I connect you with the representative from the school <strong>that call is being recorded</strong> as well for quality purposes <br><br>
+If the call should be disconnected, you can always reach me back at <strong>954-361-9501</strong>.<br><br>
+<strong>ADD CONFERENCE PARTICIPANT:</strong><br><br>
+Hi, this is <strong>(<span id="wt_agentname1"></span>)</strong> from School Match Pro. I have a potential student for you, his/her name is <strong>(<span id="wt_custname1"></span>)</strong>, his/her phone # is <strong>(<span id="wt_custphone"></span>)</strong>, and he/she was interested in <strong>(degree_program/area_of_interest).</strong><br><br>
+<strong>if applicable</strong><br>
+Can I please have your name? <strong>*This will go into the Advisor drop down list…</strong><br><br>
+<strong>COMPLETE TRANSFER:</strong><br><br>
+Hi (<span id="wt_custname2"></span>), I do have <strong>(representative_name)</strong> from <strong>(school_name)</strong> on the line to tell you a bit more about their <strong>(degree_program/area_of_interest)</strong> program. <br><br>
+Good luck, (<span id="wt_custname3"></span>), thanks so much for being so patient!<br><br>
+<strong>(ON FIVE9 – use the LEAVE CONFERENCE button and select EDU-WT as this will leave the prospect speaking to the school)</strong><br><br>
+
+
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<br><br>
+
+
+
+<div class="row">
+<div class="col-xs-10">
+<p><strong>Identify and Modality:</strong></p>
+<p>
+I found an <strong>ONLINE</strong> PROGRAM: <strong>(School Name)</strong> offers an Online <strong>(Degree Level)</strong> in <strong>(Degree Name)</strong>.
+<br>
+I’ll have an admissions adviser contact you sometime in the next few days ok?
+</p>
+<p>
+I found a <strong>CAMPUS</strong> PROGRAM: <strong>(School Name)</strong> offers a <strong>(Degree Level)</strong> in <strong>(Degree Name)</strong> at their <strong>(City or Location)</strong> campus.
+<br>
+I’ll have an admissions adviser contact you sometime in the next few days ok?
+</p>
+
+<br><br>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%;mso-pagination:
+none;mso-layout-grid-align:none;text-autospace:none'><b><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;mso-ansi-language:EN'>TCPA Statement:</span></b><span lang=EN
+style='mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri;mso-ansi-language:EN'> <o:p></o:p></span></p>
+<p class=MsoNormal><i><span style='font-size:16.0pt;line-height:107%;
+mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri'>I am required to get your separate consent for <b><u>each</u></b>
+school <b><u>individually</u></b> to contact you about the educational
+opportunities we just discussed via email, text, or phone number you provided including
+using automated technology, regardless of whether the number is on any federal
+or state do not call list. You acknowledge you are the subscriber and regular
+user of this number and are authorized to provide this consent. You acknowledge
+that your consent is not a requirement to purchase any goods or services, and
+you may withdraw your consent at any time. Message/data rates may apply.<o:p></o:p></span></i></p>
+<p class=MsoNormal><i><span style='font-size:16.0pt;line-height:107%;
+mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri'><o:p>&nbsp;</o:p></span></i></p>
+<p class=MsoNormal><i><span style='font-size:16.0pt;line-height:107%;
+mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri'>Do you give consent for &quot;school A&quot; say yes or I agree,
+(answers),&nbsp;<o:p></o:p></span></i></p>
+<p class=MsoNormal><i><span style='font-size:16.0pt;line-height:107%;
+mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri'>Do you give consent for&nbsp;&quot;school B&quot; say yes or I agree
+(answers),<o:p></o:p></span></i></p>
+<p class=MsoNormal><i><span style='font-size:16.0pt;line-height:107%;
+mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
+Calibri'>Do you give consent for &quot;school C&quot; say yes or I agree
+(answers) etc.</span></i><b><o:p></o:p></b></p>
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+</p>
+<div class="panel border_boxshadow_none panel-default">
+<a data-toggle="collapse" data-parent="#accordion" href="#collapse16">TCPA OBJECTIONS:</a>
+<div id="collapse16" class="panel-collapse collapse">
+<div class="panel-body">
+<div class="row">
+<div class="col-md-12">
+<strong>HARD "NO" TO TCPA:</strong><br>
+I understand, let us know if anything were to change. I'd like to thank you for your time today. Have a nice day. (Have to let it go)
+</div>
+<p><div class="col-md-12">
+<strong>EMAIL, CALL, TEXT:</strong> ("I only want e-mail", or "I don't want a bunch of text messages", etc.)<br>
+I understand your concern... when the schools contact you, just be sure and let them know how you prefer to be contacted and you shouldn’t have any problems going forward OK? <br> At this time, I do need your consent to the FULL disclosure, so I am going to read it again and I'll ask you for your consent when I finish
+OK?
+</div></p>
+<div class="col-md-12">
+<strong>MESSAGE AND DATA RATES:</strong> "I don't want to be charged for anything." <br>
+The schools are going to be charging you anything to get in contact with you. The message and data rates are based on YOUR SERVICE PROVIDER and whatever they charge you to recieve phones calls and text messages OK?<br> OK, I do need to read the disclosure again so just bare with me.
+</div>
+<p><div class="col-md-12">
+<strong>NOT A CLEAR "YES":</strong> <br>
+1st time: For quality purposes, I need a clear “Yes” or "I agree." So, if you consent, please simply say "I Agree.”<br>
+2nd time: I’m sorry. If you consent, please clearly say "I Agree."<br>
+3rd time: I still didn’t hear you… If you consent, please say "I Agree.”
+</div></p>
+</div>
+</div>
+</div>
+</div>
+<p>
+<br><br>
+<strong>Closing:</strong> Ok, (<span id="closing_firstname"></span>), I think we?re done! (School1), (School2), (School3), and (School4) will be in touch about the programs we discussed. Once again, this is <strong>(<span id="closing_agentname"></span>)</strong> with School Match Pro and you can always reach me at 954-361-9501. Good Luck and have a
+great day!
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<span id="callstarttimestamp" style="display:none"></span>
+<span id="callendtimestamp" style="display:none"></span>
+</body>
+</html>
